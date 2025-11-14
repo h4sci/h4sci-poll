@@ -48,3 +48,9 @@ Temporary Items
 .Rproj.user*
 .Rproj.user
 .Rapp.history
+
+
+## db generated
+/pgdata
+
+*.html
