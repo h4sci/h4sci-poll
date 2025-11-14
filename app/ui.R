@@ -6,7 +6,8 @@ ui <- fluidPage(
                     choices = c("Very satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very dissatisfied")),
         actionButton("submit", "Submit"),
         hr(),
-        textOutput("thanks")
+        textOutput("thanks"),
+        # hr(),
+        # plotOutput("distPlot")
     )
-) 
-# TODO: second page, where you see the distribution of satisfaction (bar charg or histogram)
+)
