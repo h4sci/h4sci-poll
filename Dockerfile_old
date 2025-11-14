@@ -1,0 +1,33 @@
+# # use image: docker pull rocker/shiny:4.5.1, and postgres db
+# # image 
+# FROM  --platform=linux/amd64 rocker/r-base:latest
+
+# # LABEL maintainer="Peter Solymos <peter@analythium.io>"
+# LABEL maintainer="Minna <minnaemiliahagen.heim@uzh.com>"
+
+# # adapts image
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     sudo \
+#     libcurl4-gnutls-dev \
+#     libcairo2-dev \
+#     libxt-dev \
+#     libssl-dev \
+#     libssh2-1-dev \
+#     # installing also db deps
+#     sqlite3 \
+#     && rm -rf /var/lib/apt/lists/*
+
+# # adding more dependencies
+# RUN install.r shiny RSQLite DBI
+
+# RUN echo "local(options(shiny.port = 3838, shiny.host = '0.0.0.0'))" > /usr/lib/R/etc/Rprofile.site
+
+# WORKDIR /home/app
+
+# COPY app .
+
+
+# EXPOSE 3838
+
+# CMD ["R", "-e", "shiny::runApp('/home/app')"]
+

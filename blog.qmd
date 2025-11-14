@@ -1,0 +1,9 @@
+---
+title: Containerising an R Shiny Application - lite version
+subtitle: Part of the "Self Hosted" Series
+---
+
+- dockerhub check rshiny image vs. my image!
+
+size of rshiny image: 544.9 MB
+size of alpine

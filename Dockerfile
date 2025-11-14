@@ -1,31 +1,27 @@
-FROM rocker/r-base:latest
+# TODO: be careful: devxy uses arm instead of amd 
 
-LABEL maintainer="Peter Solymos <peter@analythium.io>"
+# uses: devxygmbh/r-alpine:4-3.21
+# use: postgres -> image -> see docker-compose.yml von h4sci-survey (=post)
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    sudo \
-    libcurl4-gnutls-dev \
-    libcairo2-dev \
-    libxt-dev \
-    libssl-dev \
-    libssh2-1-dev \
-    && rm -rf /var/lib/apt/lists/*
+FROM devxygmbh/r-alpine:4-3.21
 
-RUN install.r shiny
+# Install OS deps needed for Postgres + Shiny
+RUN apk add --no-cache \
+      postgresql-client \
+      postgresql-libs \
+      postgresql-dev \
+      g++ \
+      make \
+      libc6-compat \
+      curl
 
-RUN echo "local(options(shiny.port = 3838, shiny.host = '0.0.0.0'))" > /usr/lib/R/etc/Rprofile.site
+# Install R packages (Shiny + Postgres)
+RUN R -q -e "install.packages(c('shiny','DBI','RPostgres'), repos='https://cloud.r-project.org')"
 
-RUN addgroup --system app \
-    && adduser --system --ingroup app app
-
-WORKDIR /home/app
-
-COPY app .
-
-RUN chown app:app -R /home/app
-
-USER app
+# Copy app
+WORKDIR /app
+COPY app ./app
 
 EXPOSE 3838
 
-CMD ["R", "-e", "shiny::runApp('/home/app')"]
+CMD ["R", "-e", "shiny::runApp('app', host='0.0.0.0', port=3838)"]
