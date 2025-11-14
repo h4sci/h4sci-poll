@@ -1,0 +1,34 @@
+services:
+  postgres:
+    # a name, e.g.,  db_container is instrumental to be
+    # called as host from the shiny app
+    image: postgres
+    container_name: db_container
+    # build: ./postgres
+    restart: always
+    environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+    # This port mapping is only necessary to connect from the host, 
+    # not to let containers talk to each other. 
+    # port-forwarding: von host port:nach docker port -> mapping 
+    ports:
+        - "1111:5432"
+    # if container killed, then data is still stored in volume (locally)
+    volumes:
+        - "/var/lib/postgresql"
+
+    # do i need this additional shiny installation
+  shiny:
+    build: .
+    container_name: shiny_app
+    depends_on:
+      - postgres
+    ports:
+      - "3838:3838"
+    environment:
+      PG_HOST: postgres
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_DB: testdb
+

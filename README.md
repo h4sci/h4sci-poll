@@ -1,36 +1,13 @@
 
-# ShinyProxy Hello Image
+### Usage
 
-The demo Shiny app displays some a slider and a histogram
-inspired by the [example-01-hello](https://shiny.rstudio.com/gallery/example-01-hello.html)
-Shiny example.
-
-To pull the image made in this repository from
-[GitLab Container Registry](https://gitlab.com/analythium/shinyproxy-hello/container_registry), use
+use `docker-compose build` since we have a `docker-compose.yml` file specified for the postgres db.
 
 ```bash
-docker pull registry.gitlab.com/analythium/shinyproxy-hello/hello
+docker-compose build
 ```
-
-To build the image from the Dockerfile, run
-
-```bash
-docker build -t registry.gitlab.com/analythium/shinyproxy-hello/hello .
-```
-
-Test locally
+once this is complete, we need to do the setup
 
 ```bash
-docker run -p 4000:3838 registry.gitlab.com/analythium/shinyproxy-hello/hello
-```
-
-then visit `127.0.0.1:4000`. Stop the container with Ctrl+C.
-
-(c) Copyright Analythium Solutions Inc, 2019-2020 (MIT).
-
-### minna tries
-
-```bash
-docker build -t h4sci-poll2 .
-docker run -p 4000:3838 h4sci-poll2
+docker-compose up
 ```
