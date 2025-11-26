@@ -1,15 +1,18 @@
 services:
    shiny:
-      container_name: fe_shiny
       build:
-         # context: ./shiny-image
+         context: .
          dockerfile: DOCKERFILE
+      container_name: fe_shiny
+      # depends on:
+      #    -  postgres
       restart: always
       ports:
          - "3838:3838"
       volumes:
          - "./app:/srv/app"
       command: ["R", "--vanilla", "-e", "shiny::runApp('/srv/app', host='0.0.0.0', port=3838)"]
+
    postgres:
       # a name, e.g.,  db_container is instrumental to be
       # called as host from the shiny app
@@ -27,3 +30,4 @@ services:
       # if container killed, then data is still stored in volume (locally)
       volumes:
          - "./pgdata:/var/lib/postgresql/data"
+
