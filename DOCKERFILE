@@ -1,0 +1,46 @@
+# TODO: be careful, arm and amd mismatch
+
+# FROM --platform=linux/amd64 rocker/shiny
+FROM devxygmbh/r-alpine:4-3.21
+
+# Install system dependencies
+# RUN apt-get update && apt-get install -y \
+#     libpq-dev \
+#     && rm -rf /var/lib/apt/lists/*
+
+# TODO: do i need all those?
+RUN apk add --no-cache \
+      postgresql-client \
+      postgresql-libs \
+      postgresql-dev \
+      g++ \
+      make \
+      libc6-compat \
+      curl \
+      # chat want's me to install these in case system libs are lacking to build shiny
+      openssl-dev \
+      zlib-dev \
+      libuv-dev \
+      postgresql-client postgresql-libs postgresql-dev
+
+
+# force use of binaries
+# RUN echo "options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest'))" >> /usr/local/lib/R/etc/Rprofile.site
+
+
+# Install R packages
+# one at a time to see which ones act up / compile
+RUN R -e "install.packages('DBI')"
+RUN R -e "install.packages('RPostgres')"
+RUN R -e "install.packages('shinythemes')"
+RUN R -e "install.packages('shinyjs')"
+
+# TODO: do i need this?
+WORKDIR /app
+COPY app ./app
+
+# Expose Shiny port
+EXPOSE 3838
+
+# Run Shiny in app mode (or use shiny-server if you install it)
+CMD ["R", "--vanilla", "-e", "shiny::runApp('/srv/app/', host='0.0.0.0', port=3838)"]

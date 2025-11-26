@@ -1,0 +1,33 @@
+services:
+   shiny:
+      build:
+         context: .
+         dockerfile: DOCKERFILE
+      container_name: fe_shiny
+      # depends on:
+      #    -  postgres
+      restart: always
+      ports:
+         - "3838:3838"
+      volumes:
+         - "./app:/srv/app"
+      command: ["R", "--vanilla", "-e", "shiny::runApp('/srv/app', host='0.0.0.0', port=3838)"]
+
+   postgres:
+      # a name, e.g.,  db_container is instrumental to be
+      # called as host from the shiny app
+      container_name: db_container
+      image: postgres:15-alpine
+      restart: always
+      environment:
+         - POSTGRES_USER=postgres
+         - POSTGRES_PASSWORD=postgres # Don't use passwords like this in production
+      # This port mapping is only necessary to connect from the host,
+      # not to let containers talk to each other.
+      # port-forwarding: from host port:to docker port -> mapping
+      ports:
+         - "1111:5432"
+      # if container killed, then data is still stored in volume (locally)
+      volumes:
+         - "./pgdata:/var/lib/postgresql/data"
+
