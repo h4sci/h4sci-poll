@@ -22,4 +22,4 @@ RUN R -e "install.packages('shinyjs')"
 EXPOSE 3838
 
 # Run Shiny in app mode (or use shiny-server if you install it)
-CMD ["R", "--vanilla", "-e", "shiny::runApp('/srv/shiny-server/', host='0.0.0.0', port=3838)"]
+CMD ["R", "--vanilla", "-e", "shiny::runApp('/srv/app/', host='0.0.0.0', port=3838)"]

@@ -2,14 +2,14 @@ services:
    shiny:
       container_name: fe_shiny
       build:
-         context: ./shiny-image
+         # context: ./shiny-image
          dockerfile: DOCKERFILE
       restart: always
       ports:
          - "3838:3838"
       volumes:
-         - "./shiny_data:/srv/shiny-server"
-      command: ["R", "--vanilla", "-e", "shiny::runApp('/srv/shiny-server/survey', host='0.0.0.0', port=3838)"]
+         - "./app:/srv/app"
+      command: ["R", "--vanilla", "-e", "shiny::runApp('/srv/app', host='0.0.0.0', port=3838)"]
    postgres:
       # a name, e.g.,  db_container is instrumental to be
       # called as host from the shiny app
