@@ -1,7 +1,7 @@
 library(shinythemes)
 
 fluidPage(
-  theme = shinytheme("superhero"),
+  theme = shinytheme("cerulean"),
   title = "Hacking for Science - Demo Survey",
   fluidRow(
     column(

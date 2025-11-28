@@ -1,46 +1,33 @@
-# TODO: be careful, arm and amd mismatch
-
-# FROM --platform=linux/amd64 rocker/shiny
+# Base image
 FROM devxygmbh/r-alpine:4-3.21
 
-# Install system dependencies
-# RUN apt-get update && apt-get install -y \
-#     libpq-dev \
-#     && rm -rf /var/lib/apt/lists/*
-
-# TODO: do i need all those?
-RUN apk add --no-cache \
-      postgresql-client \
-      postgresql-libs \
-      postgresql-dev \
-      g++ \
-      make \
-      libc6-compat \
-      curl \
-      # chat want's me to install these in case system libs are lacking to build shiny
-      openssl-dev \
-      zlib-dev \
-      libuv-dev \
-      postgresql-client postgresql-libs postgresql-dev
-
-
-# force use of binaries
-# RUN echo "options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest'))" >> /usr/local/lib/R/etc/Rprofile.site
-
+# Install system dependencies (Alpine package manager)
+RUN apk update && apk add --no-cache \
+    libpq \
+    libxml2 \
+    libcurl \
+    libgit2 \
+    postgresql-client \
+    postgresql-libs \
+    build-base \
+    postgresql-dev \
+    libxml2-dev \
+    libcurl-dev \
+    libgit2-dev
+    # potentially
+#     g++ \
+#       make \
+#       libc6-compat \
+#       curl \
+#       # chat want's me to install these in case system libs are lacking to build shiny
+#       openssl-dev \
+#       zlib-dev \
+#       libuv-dev \
 
 # Install R packages
-# one at a time to see which ones act up / compile
-RUN R -e "install.packages('DBI')"
-RUN R -e "install.packages('RPostgres')"
-RUN R -e "install.packages('shinythemes')"
-RUN R -e "install.packages('shinyjs')"
+RUN R -q -e 'install.packages(c("shiny", "RPostgres", "shinythemes", "shinyjs", "DBI"), repos="https://cloud.r-project.org")'
 
-# TODO: do i need this?
-WORKDIR /app
-COPY app ./app
-
-# Expose Shiny port
 EXPOSE 3838
 
-# Run Shiny in app mode (or use shiny-server if you install it)
-CMD ["R", "--vanilla", "-e", "shiny::runApp('/srv/app/', host='0.0.0.0', port=3838)"]
+# not actually used, overwritten by `docker-compose.yml`, here just in case the container is used alone, without docker-compose.
+CMD ["R", "-e", "shiny::runApp('/srv/shiny-server/survey', host='0.0.0.0', port=3838)"]
